@@ -1,6 +1,24 @@
 const readline = require('readline-sync');
+const fs = require('fs');
+const filePath = './tasks.json'; // Emplacement du fichier JSON
 
-let tasks = [];
+// Charger les tâches depuis le fichier JSON
+function loadTasks() {
+  try {
+    const data = fs.readFileSync(filePath, 'utf8');
+    return JSON.parse(data);
+  } catch (err) {
+    console.log("Aucune tâche à charger, un nouveau fichier sera créé.");
+    return []; // Retourne un tableau vide si le fichier n'existe pas ou est vide
+  }
+}
+
+// Sauvegarder les tâches dans le fichier JSON
+function saveTasks() {
+  fs.writeFileSync(filePath, JSON.stringify(tasks, null, 2), 'utf8');
+}
+
+let tasks = loadTasks(); // Charger les tâches au démarrage
 
 function showMenu() {
   console.log("\n--- To-Do List ---");
@@ -12,8 +30,14 @@ function showMenu() {
 }
 
 function addTask() {
-  const task = readline.question("Entrez une nouvelle tache : ");
-  tasks.push({ task, completed: false });
+  const task = readline.question("Entrez une nouvelle tâche : ");
+  const newTask = {
+    id: tasks.length + 1, // Générer un ID unique
+    task,
+    completed: false
+  };
+  tasks.push(newTask);
+  saveTasks(); // Sauvegarder après ajout
   console.log(`Tâche ajoutée : "${task}"`);
 }
 
@@ -23,6 +47,7 @@ function deleteTask() {
   if (index >= 0 && index < tasks.length) {
     console.log(`Tâche supprimée : "${tasks[index].task}"`);
     tasks.splice(index, 1);
+    saveTasks(); // Sauvegarder après suppression
   } else {
     console.log("Numéro de tâche invalide.");
   }
@@ -33,6 +58,7 @@ function completeTask() {
   const index = readline.questionInt("Entrez le numéro de la tâche à marquer comme complétée : ") - 1;
   if (index >= 0 && index < tasks.length) {
     tasks[index].completed = true;
+    saveTasks(); // Sauvegarder après modification
     console.log(`Tâche marquée comme complétée : "${tasks[index].task}"`);
   } else {
     console.log("Numéro de tâche invalide.");
@@ -40,12 +66,18 @@ function completeTask() {
 }
 
 function displayTasks() {
+  console.clear(); // Effacer la console avant d'afficher les tâches
   console.log("\n--- Liste des tâches ---");
-  tasks.forEach((task, index) => {
-    console.log(
-      `${index + 1}. ${task.task} ${task.completed ? "(complétée)" : ""}`
-    );
-  });
+  if (tasks.length === 0) {
+    console.log("Aucune tâche à afficher.");
+  } else {
+    tasks.forEach((task, index) => {
+      console.log(
+        `${index + 1}. ${task.task} ${task.completed ? "(complétée)" : ""}`
+      );
+    });
+  }
+  readline.question("Appuyez sur Entree pour revenir au menu..."); // Attendre l'entrée pour revenir au menu
 }
 
 function main() {
