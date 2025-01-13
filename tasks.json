@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "task": "Faire les courses",
+    "completed": true
+  },
+  {
+    "id": 2,
+    "task": "Apprendre Node.js",
+    "completed": true
+  },
+  {
+    "id": 3,
+    "task": "Coder une fonctionnalité de sauvegarde",
+    "completed": false
+  },
+  {
+    "id": 4,
+    "task": "Coder une fonctionnalité de sauvegarde",
+    "completed": false
+  },
+  {
+    "id": 5,
+    "task": "Coder une fonctionnalité de sauvegarde",
+    "completed": false
+  }
+]
